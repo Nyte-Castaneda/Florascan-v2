@@ -1,0 +1,249 @@
+# FloraScan - AI Plant Identification System
+
+FloraScan is an AI-powered web application for identifying plants, with a special focus on Philippine flora. Upload a photo or describe a plant, and let our system help you identify it!
+
+## Features
+
+- 📸 Photo-based plant identification
+- 🔍 Text description search
+- 🌿 Database of Philippine and common plants
+- 💬 User feedback system
+- 📊 Statistics and analytics
+- 🎨 Beautiful, responsive UI
+
+## Project Structure
+
+```
+florascan/
+├── app.py                 # Main Flask application
+├── florascan.db          # SQLite database (auto-generated)
+├── init_db.py            # Database initialization script
+├── view_database.py      # Database viewer utility
+├── static/               # Frontend files
+│   ├── index.html        # Main page
+│   ├── about.html        # About page
+│   ├── styles.css        # Styles
+│   └── script.js         # JavaScript functionality
+├── uploads/              # User uploaded images (auto-generated)
+└── README.md            # This file
+```
+
+## Installation
+
+### Prerequisites
+
+- Python 3.7 or higher
+- pip (Python package manager)
+
+### Setup Steps
+
+1. **Install Required Packages**
+
+```bash
+pip install flask flask-cors
+```
+
+2. **Initialize the Database**
+
+The database will be automatically initialized when you run the app, but you can also manually initialize it:
+
+```bash
+python init_db.py
+```
+
+This creates `florascan.db` with:
+- Plants table (8 pre-seeded plants)
+- Identification requests table
+- Feedback table
+- Search history table
+
+3. **Start the Application**
+
+```bash
+python app.py
+```
+
+The server will start on `http://localhost:5000`
+
+## Usage
+
+### Web Interface
+
+1. Open your browser and navigate to `http://localhost:5000`
+2. Upload a plant photo or describe the plant in text
+3. Click "Ask" to identify the plant
+4. View the identification results with confidence score
+5. Provide feedback on the accuracy
+
+### API Endpoints
+
+The application exposes several REST API endpoints:
+
+#### Get All Plants
+```
+GET /api/plants
+Query params: ?search=<term>&native=<true/false>
+```
+
+#### Get Specific Plant
+```
+GET /api/plants/<id>
+```
+
+#### Identify Plant
+```
+POST /api/identify
+Form data: image (file), description (text)
+```
+
+#### Submit Feedback
+```
+POST /api/feedback
+JSON body: {request_id: int, rating: int, comment: string}
+```
+
+#### Get Statistics
+```
+GET /api/stats
+```
+
+#### Add New Plant
+```
+POST /api/plants/add
+JSON body: {common_name, scientific_name, family, description, ...}
+```
+
+## Database Management
+
+### View Database Contents
+
+```bash
+python view_database.py
+```
+
+This interactive tool allows you to:
+- View all plants
+- View identification requests
+- View user feedback
+- View search history
+- View statistics
+
+### Database Schema
+
+**plants**
+- id (PRIMARY KEY)
+- common_name
+- scientific_name
+- family
+- description
+- native_to_philippines (BOOLEAN)
+- care_instructions
+- image_url
+- created_at
+
+**identification_requests**
+- id (PRIMARY KEY)
+- image_path
+- description
+- identified_plant_id (FOREIGN KEY)
+- confidence_score
+- status
+- created_at
+
+**feedback**
+- id (PRIMARY KEY)
+- request_id (FOREIGN KEY)
+- rating
+- comment
+- created_at
+
+**search_history**
+- id (PRIMARY KEY)
+- search_term
+- result_count
+- created_at
+
+## Pre-seeded Plants
+
+The database comes with 8 plants:
+
+1. **Spider Plant** (Chlorophytum comosum)
+2. **Snake Plant** (Sansevieria trifasciata)
+3. **Jade Plant** (Crassula ovata)
+4. **Pandakaki** (Tabernaemontana pandacaqui) 🇵🇭
+5. **Ti Plant** (Cordyline fruticosa)
+6. **Sampaguita** (Jasminum sambac) 🇵🇭 National Flower
+7. **Narra** (Pterocarpus indicus) 🇵🇭 National Tree
+8. **Ylang-Ylang** (Cananga odorata) 🇵🇭
+
+🇵🇭 = Native to Philippines
+
+## Development
+
+### Technology Stack
+
+- **Backend**: Flask (Python)
+- **Database**: SQLite3
+- **Frontend**: HTML, CSS, JavaScript (Vanilla)
+- **Styling**: Custom CSS with gradient design
+
+### Current Limitations
+
+- The identification logic is currently mock/basic (text matching)
+- In production, you would integrate a real ML model for image recognition
+- No user authentication system
+- Single-user design (not multi-tenant)
+
+### Future Enhancements
+
+- Integrate actual ML model (TensorFlow, PyTorch)
+- Add user authentication
+- Implement image preprocessing
+- Add more Philippine native plants
+- Mobile app version
+- Community contributions for plant database
+- Location-based plant recommendations
+
+## Troubleshooting
+
+**Database not found error**
+```bash
+python init_db.py
+```
+
+**Port already in use**
+- Change the port in `app.py`: `app.run(port=5001)`
+
+**Images not uploading**
+- Check that the `uploads/` directory exists
+- Verify file permissions
+
+**CORS errors**
+- Make sure `flask-cors` is installed
+- The app already has CORS enabled
+
+## License
+
+This is an educational project. Feel free to use and modify as needed.
+
+## Contributing
+
+To add more plants to the database:
+
+1. Use the API endpoint `/api/plants/add`
+2. Or directly insert into the database
+3. Or modify the `seed_data()` function in `app.py`
+
+## Support
+
+For issues or questions, please check:
+1. Database is initialized (`python init_db.py`)
+2. All dependencies are installed
+3. Server is running on the correct port
+4. Browser console for JavaScript errors
+
+---
+
+**Developed for Philippine Flora Conservation and Education**
+
+🌿 Happy Plant Identifying! 🌿

@@ -1,0 +1,37 @@
+import os
+from PIL import Image
+
+def validate_dataset(dataset_path):
+    """Validate your plant dataset"""
+    
+    required_plants = ['spider_plant', 'snake_plant', 'jade_plant', 'pandakaki', 'ti_plant']
+    
+    print("🔍 Validating Dataset...\n")
+    
+    for plant in required_plants:
+        plant_path = os.path.join(dataset_path, plant)
+        
+        if not os.path.exists(plant_path):
+            print(f"❌ Missing folder: {plant}")
+            continue
+            
+        images = [f for f in os.listdir(plant_path) 
+                 if f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))]
+        
+        print(f"✅ {plant}: {len(images)} images")
+        
+        # Check image quality
+        for img_file in images[:3]:  # Check first 3 images
+            img_path = os.path.join(plant_path, img_file)
+            try:
+                with Image.open(img_path) as img:
+                    width, height = img.size
+                    if width < 224 or height < 224:
+                        print(f"   ⚠️  {img_file} is too small ({width}x{height})")
+            except Exception as e:
+                print(f"   ❌ {img_file} is corrupted: {e}")
+    
+    print("\n✨ Dataset validation complete!")
+
+# Run validation
+validate_dataset('plant_dataset')
